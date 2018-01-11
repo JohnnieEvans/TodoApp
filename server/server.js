@@ -43,12 +43,12 @@ app.get('/todos/:id', (req, res) => {
         .then(
             todo => {
                 if (todo) {
-                   return res.send(todo);
+                   return res.send({ todo });
                 }
                 res.status(404).send();
-            },
-            e => res.status(400).send(e)
-        );
+            }
+        )
+        .catch(e => res.status(400).send(e));
 });
 
 app.listen(3000, () => console.log('Started on port 3000'));
