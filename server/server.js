@@ -30,7 +30,28 @@ app.post('/api/todos', (req, res) => {
 
 // GET all TODOs in DB
 app.get('/api/todos', (req, res) => {
-    Todo.find()
+    let query = undefined;
+    if(req.query.show) {
+        switch(req.query.show) {
+            case 'all':
+                break;
+            case 'priority':
+                query = { priority: true }
+                break;
+            case 'notCompleted':
+                query = { completed: false }
+                break;
+            case 'completed':
+                query = { completed: true }
+                break;
+            default:
+                break;
+        }
+    }
+
+    Todo.find(query)
+        .sort({ priority: -1 })
+        .sort({ completed: 1 })
         .then(
             todos => res.send({ todos }),
             e => res.status(400).send(e)
