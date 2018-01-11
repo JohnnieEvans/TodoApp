@@ -27,8 +27,19 @@ app.get('/todos', (req, res) => {
         .then(
             todos => res.send({ todos }),
             e => res.status(400).send(e)
-        )
-})
+        );
+});
+
+// GET TODO with id in BD
+app.get('/todos/:id', (req, res) => {
+    let id = req.params.id;
+
+    Todo.findById(id)
+        .then(
+            todo => res.send(todo),
+            e => res.status(400).send(e)
+        );
+});
 
 app.listen(3000, () => console.log('Started on port 3000'));
 
