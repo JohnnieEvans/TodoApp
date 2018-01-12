@@ -1,0 +1,16 @@
+.priority {
+    background-color: #ff8e8e;
+}
+
+.completed {
+    background-color: #83d190;
+}
+
+input {
+    margin-right: 1rem;
+}
+
+td a {
+    text-decoration: none;
+    color: black;
+}
