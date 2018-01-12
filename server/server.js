@@ -39,7 +39,7 @@ app.get('/api/todos', (req, res) => {
             case 'priority':
                 query = { priority: true }
                 break;
-            case 'notCompleted':
+            case 'active':
                 query = { completed: false }
                 break;
             case 'completed':
@@ -75,7 +75,7 @@ app.delete('/api/delete/:id', (req, res) => {
             res.send(todo);
         })
         .catch(e => res.status(400).send());
-})
+});
 
 // PATCH TODO with id in DB
 app.patch('/api/patch/:id', (req, res) => {
@@ -92,6 +92,18 @@ app.patch('/api/patch/:id', (req, res) => {
         })
         .catch(e => res.status(400).send());
 });
+
+// DELETE all completed TODOs
+app.delete('/api/delete', (req, res) => {
+    Todo.remove({ completed: true })
+        .then(todo => {
+            if (!todo) {
+                return res.status(404).send();
+            }
+            res.send(todo);
+        })
+        .catch(e => res.status(400).send());
+})
 
 app.listen(3001, () => console.log('Started on port 3001'));
 

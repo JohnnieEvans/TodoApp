@@ -4,28 +4,32 @@ import axios from 'axios';
 import TableRow from './components/TableRow';
 
 export default class Tasks extends Component {
-    state = { tasks: [], query: '' };
+    state = { tasks: [], query: '', active: 0 };
 
-    // Set state of todolist before page loads
+    // Set state of tasklist before page loads
     componentWillMount() {
         this._getTasks();
     }
 
-    // GET array of all tasks and insert into todo state
+    // GET array of all tasks and insert into tasks state
     _getTasks = () => {
         fetch('http://localhost:3001/api/todos')
             .then(res => {
                 res.json()
                 .then(res => this.setState({ tasks: res.todos }));
             });
-    }
+        fetch('http://localhost:3001/api/todos?show=active')
+            .then(res => {
+                res.json()
+                .then(res => this.setState({ active: res.todos.length }));
+            });
+    };
 
     // DELETE task with id
     _delete = (id) => {
-        let update = this.state.todos.filter(todo => todo._id !== id);
-        this.setState({ todos: update });
-
-        axios.delete(`http://localhost:3001/api/delete/${id}`);
+        axios.delete(`http://localhost:3001/api/delete/${id}`)
+            .then(() => this._getTasks())
+            .catch(e => console.log(e));
     };
 
     // Render table data using the reusable component TableRow
@@ -40,6 +44,7 @@ export default class Tasks extends Component {
                 />
             );
         }
+
         let filteredTasks = this.state.tasks.filter(task => task.task.toLowerCase().includes(this.state.query.toLowerCase().trim()));
 
         return filteredTasks.map(task => 
@@ -52,6 +57,13 @@ export default class Tasks extends Component {
         );
     };
 
+    // DELETE all completed tasks
+    _deleteCompleted = () => {
+        axios.delete(`http://localhost:3001/api/delete`)
+            .then(() => this._getTasks())
+            .catch(e => console.log(e));
+    };
+
     // POST task 
     _addTask = (e) => {
         e.preventDefault();
@@ -59,14 +71,34 @@ export default class Tasks extends Component {
         let task = e.target.task.value;
 
         axios.post('http://localhost:3001/api/todos', { task })
-            .then(res => {
-                console.log(res);
-                this._getTasks();
-            })
+            .then(() => this._getTasks())
             .catch((error) => console.log(error));
 
         e.target.task.value = '';
     };
+
+    // Change viewable tasks
+    _changeDisplay = (view) => {
+        switch(view) {
+            case 'priority':
+                fetch('http://localhost:3001/api/todos?show=priority')
+                    .then(res => {
+                        res.json()
+                        .then(res => this.setState({ tasks: res.todos }));
+                    });
+                break;
+            case 'active':
+                fetch('http://localhost:3001/api/todos?show=active')
+                    .then(res => {
+                        res.json()
+                        .then(res => this.setState({ tasks: res.todos }));
+                    });
+                break;
+            default:
+                this._getTasks();
+                break;
+        }
+    } 
 
     // Update query state for live search
     _updateQuery = (e) => this.setState({ query: e.target.value });
@@ -74,19 +106,31 @@ export default class Tasks extends Component {
     // PATCH task with id and change values of completed and priority
     _toggleActive = (id, completed, priority) => {
         axios.patch(`http://localhost:3001/api/patch/${id}?completed=${completed}&&priority=${priority}`)
-            .then((res) => {
-                console.log(res);
-            })
-            .then(() => this._getTasks());
+            .then(() => this._getTasks())
+            .catch(e => console.log(e));
     };
 
     render() {
         return (
-            <div>
+            <div style={{textAlign:'center'}}>
                 <br />
-                <div style={{textAlign:'center'}}>
-                    <input className='searchbar' name='query' type='text' onKeyUp={this._updateQuery} />
+                <h1><u>Todo Web App</u></h1>
+                <div>
+                    <p>
+                        Live Search:&nbsp;
+                        <input name='query' type='text' onKeyUp={this._updateQuery} />
+                    </p>
                 </div>
+                <div>
+                    <p>
+                        <a className='clickable' onClick={() => this._changeDisplay('priority')}>Show Priority</a>
+                        &nbsp;|&nbsp;
+                        <a className='clickable' onClick={() => this._changeDisplay('active')}>Show Active</a>
+                        &nbsp;|&nbsp;
+                        <a className='clickable' onClick={() => this._changeDisplay()}>Show All</a>
+                    </p>
+                </div>
+                <p>{`You have ${this.state.active} active task${this.state.active > 1 ? 's' : ''}.`}</p>
                 <table style={{margin: "0 auto"}}>
                     <thead>
                         <tr>
@@ -101,11 +145,14 @@ export default class Tasks extends Component {
                     </tbody>
                 </table>
                 <br />
-                <div style={{textAlign: "center"}}>
+                <div>
                     <form onSubmit={this._addTask}>
                         <input type="text" name='task' />
                         <button>Add Task</button>
                     </form>
+                </div>
+                <div>
+                    <button onClick={() => this._deleteCompleted()} style={{color: 'white', backgroundColor: 'red'}}>Delete Completed</button>
                 </div>
             </div>
         );

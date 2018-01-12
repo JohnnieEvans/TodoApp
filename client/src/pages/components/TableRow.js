@@ -24,7 +24,7 @@ export default class TableRow extends Component {
         : 
         jsx = (
             <a onClick={() => this.props.toggleActive(id, !completed, priority)}>
-                <i className="fas fa-check"></i>
+                <i className="fas fa-check clickable"></i>
             </a> 
         )
 
@@ -39,7 +39,7 @@ export default class TableRow extends Component {
         ? 
         jsx = (
             <a onClick={() => this.props.toggleActive(id, completed, !priority)}>
-                <i className="fas fa-exclamation"></i>
+                <i className="fas fa-exclamation clickable"></i>
             </a>
         ) 
         : 
@@ -60,7 +60,7 @@ export default class TableRow extends Component {
                 <td>&nbsp;{this._exclamation(data._id, data.priority, data.completed)}</td>
                 <td>{this._checkmark(data._id, data.priority, data.completed)}</td>
                 <td>{data.task}</td>
-                <td><a onClick={() => deleteTask(data._id)}><i className="fas fa-trash-alt"></i></a></td>
+                <td><a onClick={() => deleteTask(data._id)}><i className="fas fa-trash-alt clickable"></i></a></td>
             </tr>
         );
     }

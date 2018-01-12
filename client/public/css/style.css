@@ -21,11 +21,32 @@ td a {
 
 .inactive:hover {
     color: #0FA0CE;
+    cursor: pointer;
 }
 
-.searchbar {
-    background-image: url('/search.png');
-    background-repeat: no-repeat;
-    background-size: 17%;
-    padding-left: 4rem !important;
+.clickable:hover {
+    cursor: pointer;
+}
+
+html {
+    background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.7) 10%, rgba(72, 0, 100, 0.7) 90%) no-repeat center center fixed;
+    background-size: cover;
+    height: 100%;
+}
+
+body {
+    height: 100%;
+}
+
+#root {
+    max-width: 800px;
+    background-color: white;
+    height: 100%;
+    width: 100%;
+}
+
+@media (min-width: 800px) {
+    #root {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
 }
