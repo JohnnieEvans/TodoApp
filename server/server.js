@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE');
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
@@ -68,7 +68,7 @@ app.delete('/api/delete/:id', (req, res) => {
     }  
 
     Todo.findByIdAndRemove(id)
-        .then( todo => {
+        .then(todo => {
             if (!todo) {
                 return res.status(404).send();
             }
@@ -76,6 +76,22 @@ app.delete('/api/delete/:id', (req, res) => {
         })
         .catch(e => res.status(400).send());
 })
+
+// PATCH TODO with id in DB
+app.patch('/api/patch/:id', (req, res) => {
+    let id = req.params.id;
+    let completed = req.query.completed || undefined;
+    let priority = req.query.priority || undefined;
+
+    Todo.findByIdAndUpdate(id, {$set: { completed, priority }}, {new: true})
+        .then(todo => {
+            if (!todo) {
+                return res.status(404).send();
+            }
+            res.send(todo);
+        })
+        .catch(e => res.status(400).send());
+});
 
 app.listen(3001, () => console.log('Started on port 3001'));
 

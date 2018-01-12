@@ -14,3 +14,18 @@ td a {
     text-decoration: none;
     color: black;
 }
+
+.inactive {
+    color: lightgray;
+}
+
+.inactive:hover {
+    color: #0FA0CE;
+}
+
+.searchbar {
+    background-image: url('/search.png');
+    background-repeat: no-repeat;
+    background-size: 17%;
+    padding-left: 4rem !important;
+}

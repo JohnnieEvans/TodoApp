@@ -1,10 +1,10 @@
 import React from 'react';
 
-import Routes from './router/Routes';
+import Tasks from './pages/Tasks';
 
 const App = () => (
     <div>
-        <Routes />
+        <Tasks />
     </div>
 );
 

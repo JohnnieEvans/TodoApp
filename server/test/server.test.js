@@ -74,7 +74,7 @@ describe('GET /todos', () => {
     });
 });
 
-describe('DELETE /todos/:id', () => {
+describe('DELETE /delete/:id', () => {
     it('should delete todo with id', done => {
         request(app)
             .delete(`/api/delete/${todos[0]._id}`)
@@ -83,5 +83,20 @@ describe('DELETE /todos/:id', () => {
                 expect(res.body.task).toBe(todos[0].task);
             })
             .end(done);
-    })
-})
+    });
+});
+
+describe('PATCH /patch/:id', () => {
+    it('should update todo with id', done => {
+        request(app)
+            .patch(`/api/patch/${todos[0]._id}?completed=true&&priority=true`)
+            .expect(200)
+            .expect(res => {
+                expect(res.body.completed).toBe(true);
+            })
+            .expect(res => {
+                expect(res.body.priority).toBe(true);
+            })
+            .end(done);
+    });
+});

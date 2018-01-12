@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 
 export default class TableRow extends Component {
-    state = { editable: false };
-
+    // Set className value for table row based on if task is completed or a priority
     _className = (priority, completed) => {
         let name;
         priority ? name = "priority" : this.name = name;
@@ -11,18 +10,57 @@ export default class TableRow extends Component {
         return name;
     }
 
-    _toggleEdit = () => {};
+    // Set checkmark based on if task is completed
+    _checkmark = (id, priority, completed) => {
+        let jsx;
+
+        completed 
+        ? 
+        jsx = (
+            <a onClick={() => this.props.toggleActive(id, !completed, priority)}>
+                <i className="fas fa-check inactive"></i>
+            </a> 
+        )
+        : 
+        jsx = (
+            <a onClick={() => this.props.toggleActive(id, !completed, priority)}>
+                <i className="fas fa-check"></i>
+            </a> 
+        )
+
+        return jsx;
+    }
+
+    // Set exclamation based on if task is a priority
+    _exclamation = (id, priority, completed) => {
+        let jsx;
+
+        priority 
+        ? 
+        jsx = (
+            <a onClick={() => this.props.toggleActive(id, completed, !priority)}>
+                <i className="fas fa-exclamation"></i>
+            </a>
+        ) 
+        : 
+        jsx = (
+            <a onClick={() => this.props.toggleActive(id, completed, !priority)}>
+                <i className="fas fa-exclamation inactive"></i>
+            </a>
+        )
+
+        return jsx;
+    }
 
     render() {
         let { data, deleteTask } = this.props;
 
         return (
             <tr className={this._className(data.priority, data.completed)}>
-                <td>&nbsp;{ data.priority ? <i className="fas fa-exclamation"></i> : undefined }</td>
-                <td>{ data.completed ? undefined : <i className="fas fa-check"></i> }</td>
+                <td>&nbsp;{this._exclamation(data._id, data.priority, data.completed)}</td>
+                <td>{this._checkmark(data._id, data.priority, data.completed)}</td>
                 <td>{data.task}</td>
-                <td><a onClick={this._toggleEdit()}><i className="fas fa-edit"></i></a></td>
-                <td><a onClick={() => deleteTask(data._id)}><i className="fas fa-trash-alt"></i></a>&nbsp;</td>
+                <td><a onClick={() => deleteTask(data._id)}><i className="fas fa-trash-alt"></i></a></td>
             </tr>
         );
     }
