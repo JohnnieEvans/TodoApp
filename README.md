@@ -15,3 +15,4 @@ Information
 * Green background on table row means task is completed
 * Red background on table row means task is a priority
 * Clicking on the exclamation/checkmark toggles active and priority status
+* Tests can be run by using yarn test
