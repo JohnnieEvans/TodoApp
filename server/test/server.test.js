@@ -21,7 +21,7 @@ describe('POST /todos', () => {
         let task = 'Test todo task';
 
         request(app)
-            .post('/todos')
+            .post('/api/todos')
             .send({ task })
             .expect(200)
             .expect(res => {
@@ -44,7 +44,7 @@ describe('POST /todos', () => {
 
     it('should not create todo with invalid body data', done => {
         request(app)
-            .post('/todos')
+            .post('/api/todos')
             .send()
             .expect(400)
             .end((err, res) => {
@@ -65,7 +65,7 @@ describe('POST /todos', () => {
 describe('GET /todos', () => {
     it('should get all todos', done => {
         request(app)
-            .get('/todos')
+            .get('/api/todos')
             .expect(200)
             .expect(res => {
                 expect(res.body.todos.length).toBe(2);
@@ -74,28 +74,14 @@ describe('GET /todos', () => {
     });
 });
 
-describe('GET /todos/:id', () => {
-    it('should return todo with id', done => {
+describe('DELETE /todos/:id', () => {
+    it('should delete todo with id', done => {
         request(app)
-            .get(`/todos/${todos[0]._id.toHexString()}`)
+            .delete(`/api/delete/${todos[0]._id}`)
             .expect(200)
             .expect(res => {
-                expect(res.body.todo.task).toBe(todos[0].task);
+                expect(res.body.task).toBe(todos[0].task);
             })
             .end(done);
-    });
-
-    it('should return 404 if todo not found', done => {
-        request(app)
-            .get(`/todos/${new ObjectID().toHexString()}`)
-            .expect(404)
-            .end(done);
-    });
-
-    it('should return 404 for non-object ids', done => {
-        request(app)
-            .get(`/todos/123`)
-                .expect(404)
-                .end(done);
-    });
-});
+    })
+})

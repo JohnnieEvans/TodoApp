@@ -18,16 +18,30 @@ export class Todos extends Component {
             });
     }
 
+    _delete = (id) => {
+        let update = this.state.todos.filter(todo => todo._id !== id);
+        this.setState({ todos: update });
+
+        axios.delete(`http://localhost:3001/api/delete/${id}`);
+    };
+
     _renderTodos = () => (
-        this.state.todos.map(todo => <TableRow data={todo} key={todo._id} />)
+        this.state.todos.map(todo => <TableRow data={todo} key={todo._id} deleteTask={this._delete} />)
     );
 
     _addTask = (e) => {
-        let task = e.target.task.value
+        e.preventDefault();
+
+        let task = e.target.task.value;
 
         axios.post('http://localhost:3001/api/todos', { task })
-            .then(res => console.log(res))
+            .then(res => {
+                console.log(res);
+                this._getTasks();
+            })
             .catch((error) => console.log(error));
+
+        e.target.task.value = '';
     };
 
     render() {
@@ -37,6 +51,7 @@ export class Todos extends Component {
                     <thead>
                         <tr>
                             <td>Priority</td>
+                            <td>Active</td>
                             <td>Task</td>
                             <td>Edit</td>
                             <td>Delete</td>

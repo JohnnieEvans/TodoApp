@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 export default class TableRow extends Component {
-    state = {};
+    state = { editable: false };
 
     _className = (priority, completed) => {
         let name;
@@ -13,18 +13,16 @@ export default class TableRow extends Component {
 
     _toggleEdit = () => {};
 
-    _delete = (id) => {
-    };
-
     render() {
-        let { data } = this.props;
+        let { data, deleteTask } = this.props;
 
         return (
             <tr className={this._className(data.priority, data.completed)}>
                 <td>&nbsp;{ data.priority ? <i className="fas fa-exclamation"></i> : undefined }</td>
+                <td>{ data.completed ? undefined : <i className="fas fa-check"></i> }</td>
                 <td>{data.task}</td>
                 <td><a onClick={this._toggleEdit()}><i className="fas fa-edit"></i></a></td>
-                <td><a onClick={this._delete(data._id)}><i className="fas fa-trash-alt"></i></a>&nbsp;</td>
+                <td><a onClick={() => deleteTask(data._id)}><i className="fas fa-trash-alt"></i></a>&nbsp;</td>
             </tr>
         );
     }

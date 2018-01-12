@@ -11,6 +11,7 @@ app.use(bodyParser.json());
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
@@ -58,25 +59,23 @@ app.get('/api/todos', (req, res) => {
         );
 });
 
-// GET TODO with id in BD
-app.get('/api/todos/:id', (req, res) => {
+// DELETE TODO with id in DB
+app.delete('/api/delete/:id', (req, res) => {
     let id = req.params.id;
 
     if (!ObjectId.isValid(id)) {
         return res.status(404).send();
-    }   
+    }  
 
-    Todo.findById(id)
-        .then(
-            todo => {
-                if (todo) {
-                   return res.send({ todo });
-                }
-                res.status(404).send();
+    Todo.findByIdAndRemove(id)
+        .then( todo => {
+            if (!todo) {
+                return res.status(404).send();
             }
-        )
-        .catch(e => res.status(400).send(e));
-});
+            res.send(todo);
+        })
+        .catch(e => res.status(400).send());
+})
 
 app.listen(3001, () => console.log('Started on port 3001'));
 
